@@ -1,0 +1,18 @@
+resource "oci_identity_dynamic_group" "federated_users" {
+  compartment_id = var.tenancy_ocid
+  name           = "DSIT_Federated_Users"
+  description    = "Federated human users"
+  matching_rule  = "ALL {principal.type = 'federated'}"
+}
+resource "oci_identity_dynamic_group" "ci_cd" {
+  compartment_id = var.tenancy_ocid
+  name           = "DSIT_CI_CD"
+  description    = "CI/CD OIDC workflows"
+  matching_rule  = "ALL {principal.type = 'federated', principal.source = 'github'}"
+}
+resource "oci_identity_dynamic_group" "workloads" {
+  compartment_id = var.tenancy_ocid
+  name           = "DSIT_Workloads"
+  description    = "Resource principals for workloads"
+  matching_rule  = "ALL {resource.compartment.id = '${oci_identity_compartment.dsit_hackathon.id}'}"
+}
