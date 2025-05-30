@@ -1,0 +1,40 @@
+name: Terraform Deploy to OCI (Federated)
+on:
+  push:
+    branches: [ "main" ]
+permissions:
+  id-token: write   # 👈 Required for OIDC federation
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.6.0
+
+    - name: Configure OCI via OIDC
+      env:
+        OCI_CLI_AUTH: security_token
+        OCI_CLI_PROFILE: "DEFAULT"
+        OCI_REGION: "uk-london-1"
+      run: |
+        echo "Setting up OCI config"
+        mkdir -p ~/.oci
+        echo "[DEFAULT]" >> ~/.oci/config
+        echo "tenancy=your-tenancy-ocid" >> ~/.oci/config
+        echo "region=uk-london-1" >> ~/.oci/config
+        echo "auth=security_token" >> ~/.oci/config
+
+        export OCI_CLI_AUTH=security_token
+    - name: Terraform Init
+      run: terraform init
+    - name: Terraform Plan
+      run: terraform plan -input=false
+    - name: Terraform Apply
+      run: terraform apply -auto-approve -input=false
