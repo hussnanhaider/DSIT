@@ -1,0 +1,24 @@
+resource "oci_identity_policy" "policy_humans" {
+  compartment_id = oci_identity_compartment.dsit_hackathon.id
+  name           = "DSIT_Human_Policy"
+  description    = "Minimal access for federated users"
+  statements     = [
+    "allow dynamic-group DSIT_Federated_Users to inspect compartments in tenancy"
+  ]
+}
+resource "oci_identity_policy" "policy_ci_cd" {
+  compartment_id = oci_identity_compartment.dsit_hackathon.id
+  name           = "DSIT_CI_Policy"
+  description    = "Full resource control for CI/CD workflows"
+  statements     = [
+    "allow dynamic-group DSIT_CI_CD to manage all-resources in compartment DSIT_hackathon"
+  ]
+}
+resource "oci_identity_policy" "policy_workloads" {
+  compartment_id = oci_identity_compartment.dsit_hackathon.id
+  name           = "DSIT_Workload_Policy"
+  description    = "Object Store access for workload identities"
+  statements     = [
+    "allow dynamic-group DSIT_Workloads to read buckets in compartment DSIT_hackathon"
+  ]
+}
