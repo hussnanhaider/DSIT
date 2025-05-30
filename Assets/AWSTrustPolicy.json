@@ -1,0 +1,22 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::<aws-account-id>:oidc-provider/<oci-issuer>"
+      },
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "<oci-issuer>:sub": "ocid1.instance.oc1..exampleuniqueID"
+        }
+      }
+    }
+  ]
+}
+
+'''Replace:
+	<aws-account-id> with your AWS account number
+	<oci-issuer> with OCI’s OIDC token issuer (example: tenancy.oc1.oraclecloud.com/...)
+	sub value with your OCI workload principal or allow all federated identities using StringLike "*"'''
