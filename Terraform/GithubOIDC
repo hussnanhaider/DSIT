@@ -1,0 +1,19 @@
+resource "oci_identity_identity_provider" "github_oidc" {
+  compartment_id = oci_identity_compartment.dsit_hackathon.id
+  name           = "GitHubOIDC"
+  product_type   = "OIDC"
+  protocol       = "OIDC"
+  description    = "GitHub OIDC IdP for CI/CD"
+  metadata_url   = "https://token.actions.githubusercontent.com/.well-known/openid-configuration"
+  freeform_tags  = { "Environment" = "Hackathon" }
+}
+resource "oci_identity_idp_group_mapping" "github_mapped" {
+  idp_id        = oci_identity_identity_provider.github_oidc.id
+  group_id      = oci_identity_group.github_ci_group.id
+  idp_group_name = "GitHubActions"
+}
+resource "oci_identity_group" "github_ci_group" {
+  compartment_id = var.tenancy_ocid
+  name           = "GitHub_CI_Group"
+  description    = "Group mapped from GitHub IdP"
+}
