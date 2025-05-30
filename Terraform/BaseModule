@@ -1,0 +1,8 @@
+provider "oci" {
+  region = "uk-london-1"
+}
+resource "oci_identity_compartment" "dsit_hackathon" {
+  name          = "DSIT_hackathon"
+  description   = "Zero Trust Hackathon Compartment"
+  enable_delete = true
+}
