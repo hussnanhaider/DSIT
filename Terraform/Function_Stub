@@ -1,0 +1,12 @@
+resource "oci_functions_application" "app" {
+  compartment_id = oci_identity_compartment.dsit_hackathon.id
+  display_name   = "dsit-app"
+  subnet_ids     = [var.subnet_ocid] # Create or reuse an existing subnet
+}
+resource "oci_functions_function" "hello_fn" {
+  application_id = oci_functions_application.app.id
+  display_name   = "hello"
+  image          = "iad.ocir.io/oracle/functions/hello-world:0.0.1" # use your OCIR or public one
+  memory_in_mbs  = 128
+  timeout_in_seconds = 30
+}
